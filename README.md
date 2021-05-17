@@ -4,7 +4,7 @@ O Teste consiste em realizar um Pull Request (e apenas 1 Pull Request) realizand
 
 A aplicação consiste em um parser do arquivo .json no formato a baixo:
 
-  - priv/static/payload/payload.json
+  - priv/payload/payload.json
 
 Você pode realizar qualquer modificação necessária para concluir o teste, incluindo:
   

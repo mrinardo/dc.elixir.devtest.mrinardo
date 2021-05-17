@@ -1,6 +1,6 @@
 defmodule DeliverycenterElixir.Parser do
   def call() do
-    payload_file = "priv/static/payload/payload.json"
+    payload_file = "priv/payload/payload.json"
     open_file = File.read!(payload_file)
     json = Jason.decode!(open_file)
     # Aqui é recomendável cadastrar o payload no database antes de realizar o parser
