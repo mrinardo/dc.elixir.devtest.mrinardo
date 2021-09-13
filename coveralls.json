@@ -1,0 +1,17 @@
+{
+    "skip_files": [
+        "test/support",
+        "lib/deliverycenter_elixir.ex",
+        "lib/deliverycenter_elixir_web.ex",
+        "lib/deliverycenter_elixir/application.ex",
+        "lib/deliverycenter_elixir/repo.ex",
+        "lib/deliverycenter_elixir_web/endpoint.ex",
+        "lib/deliverycenter_elixir_web/gettext.ex",
+        "lib/deliverycenter_elixir_web/telemetry.ex",
+        "lib/deliverycenter_elixir_web/router.ex",
+        "lib/deliverycenter_elixir_web/channels/user_socket.ex",
+        "lib/deliverycenter_elixir_web/views/error_helpers.ex",
+        "lib/deliverycenter_elixir_web/views/layout_view.ex",
+        "lib/deliverycenter_elixir_web/views/page_view.ex"
+    ]
+}
