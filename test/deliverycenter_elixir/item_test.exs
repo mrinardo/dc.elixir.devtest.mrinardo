@@ -6,7 +6,7 @@ defmodule DeliverycenterElixir.ItemTest do
   alias DeliverycenterElixir.Item
   alias Ecto.Changeset
 
-  describe "changeset/1" do
+  describe "changeset/2" do
     test "when param is valid, returns a changeset for a new record" do
       item_params = build(:item_params)
 

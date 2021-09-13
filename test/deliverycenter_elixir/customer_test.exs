@@ -6,7 +6,7 @@ defmodule DeliverycenterElixir.CustomerTest do
   alias DeliverycenterElixir.Customer
   alias Ecto.Changeset
 
-  describe "changeset/1" do
+  describe "changeset/2" do
     test "when param is valid, returns a changeset for a new record" do
       customer_params = build(:customer_params)
 

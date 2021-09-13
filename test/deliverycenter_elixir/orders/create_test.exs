@@ -6,7 +6,7 @@ defmodule DeliverycenterElixir.Order.CreateTest do
   alias DeliverycenterElixir.Orders.Create
   alias Ecto.Changeset
 
-  describe "call/0" do
+  describe "call/5" do
     test "when params are valid, create record in the order and all related tables" do
       order_params = build(:order_params)
       customer_params = build(:customer_params)

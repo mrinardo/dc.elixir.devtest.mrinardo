@@ -6,7 +6,7 @@ defmodule DeliverycenterElixir.AddressTest do
   alias DeliverycenterElixir.Address
   alias Ecto.Changeset
 
-  describe "changeset/1" do
+  describe "changeset/2" do
     test "when param is valid, returns a changeset for a new record" do
       address_params = build(:address_params)
 

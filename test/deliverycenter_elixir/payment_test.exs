@@ -6,7 +6,7 @@ defmodule DeliverycenterElixir.PaymentTest do
   alias DeliverycenterElixir.Payment
   alias Ecto.Changeset
 
-  describe "changeset/1" do
+  describe "changeset/2" do
     test "when param is valid, returns a changeset for a new record" do
       payment_params = build(:payment_params)
 
