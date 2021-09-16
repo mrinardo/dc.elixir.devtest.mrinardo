@@ -2,10 +2,11 @@ use Mix.Config
 
 # Configure your database
 config :deliverycenter_elixir, DeliverycenterElixir.Repo,
-  username: "postgres",
-  password: "postgres",
-  database: "deliverycenter_elixir_dev",
-  hostname: "localhost",
+  username: System.get_env("PGUSER") || "postgres",
+  password: System.get_env("PGPASSWORD") || "postgres",
+  database: (System.get_env("PGDATABASE") || "deliverycenter_elixir") <> "_dev",
+  hostname: System.get_env("PGHOST") || "localhost",
+  port: System.get_env("PGPORT") || 5432,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
