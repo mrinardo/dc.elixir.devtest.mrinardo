@@ -36,7 +36,7 @@ Teremos um container chamado *"elixir"* para a aplicação Phoenix e outro chama
   sudo docker-compose up
   ```
 
-O ambiente será criado e em seguida aplicação será inicializada.
+O ambiente será criado e em seguida a aplicação será inicializada.
 
 Acesse o endpoint **http://localhost:4000/parser** para executar o módulo Parser, gravar os dados no banco de dados e receber um JSON como resposta.
 
