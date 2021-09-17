@@ -16,5 +16,13 @@ defmodule DeliverycenterElixir.ParserTest do
       assert json.dtOrderCreate == "2019-06-24T16:45:32.000-04:00"
       assert json.timeToExpire == "2019-06-24T17:45:32.000-04:00"
     end
+
+    test "if the json file is not found, returns an error" do
+      response = Parser.call("file_not_found.json")
+
+      expected_response = {:error, "Unable to open JSON file"}
+
+      assert expected_response == response
+    end
   end
 end
