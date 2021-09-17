@@ -12,6 +12,7 @@
         "lib/deliverycenter_elixir_web/channels/user_socket.ex",
         "lib/deliverycenter_elixir_web/views/error_helpers.ex",
         "lib/deliverycenter_elixir_web/views/layout_view.ex",
-        "lib/deliverycenter_elixir_web/views/page_view.ex"
+        "lib/deliverycenter_elixir_web/views/page_view.ex",
+        "lib/deliverycenter_elixir_web/views/error_view.ex"
     ]
 }

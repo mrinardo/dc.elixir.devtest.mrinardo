@@ -5,25 +5,35 @@ defmodule DeliverycenterElixir.Parser do
   @default_json_file "priv/payload/payload.json"
 
   def call(payload_file \\ @default_json_file) do
-    open_file = File.read!(payload_file)
-    json = Jason.decode!(open_file)
+    with {:ok, open_file} <- File.read(payload_file),
+         {:ok, json} <- Jason.decode(open_file) do
+      # Extrair do JSON os dados de cada entidade
+      order_data = get_order_data(json)
+      customer_data = get_customer_data(json)
+      item_data = get_item_data(json)
+      address_data = get_address_data(json)
+      payment_data = get_payment_data(json)
 
-    order_data = get_order_data(json)
-    customer_data = get_customer_data(json)
-    item_data = get_item_data(json)
-    address_data = get_address_data(json)
-    payment_data = get_payment_data(json)
+      # Cadastrar os dados no banco de dados
+      result = OrderCreate.call(order_data, customer_data, address_data, payment_data, item_data)
 
-    # Aqui é recomendável cadastrar o payload no database antes de realizar o parser
-    result = OrderCreate.call(order_data, customer_data, address_data, payment_data, item_data)
+      case result do
+        {:ok, _trans_result} ->
+          parser(json)
 
-    case result do
-      {:ok, _trans_result} ->
-        parser(json)
+        {:error, _failed_operation, failed_value, _changes_so_far} ->
+          {:error, failed_value}
+      end
+    else
+      {:error, :enoent} ->
+        {:error, "Unable to open JSON file"}
 
-      {:error, failed_operation, failed_value, changes_so_far} ->
-        {:error, failed_operation, failed_value, changes_so_far}
+      {:error, _message} = error ->
+        error
     end
+
+    # open_file = File.read!(payload_file)
+    # json = Jason.decode!(open_file)
   end
 
   defp get_address_data(%{"shipping" => shipping}) do
@@ -53,11 +63,15 @@ defmodule DeliverycenterElixir.Parser do
     create_date = order["date_created"]
     expiration_in_minutes = order["expiration_in_minutes"]
 
-    expiration_date = CalculateExpirationDate.call(create_date, expiration_in_minutes)
-
-    order
-    |> rename_id()
-    |> Map.put("expiration_date", expiration_date)
+    with {:ok, expiration_date} <-
+           CalculateExpirationDate.call(create_date, expiration_in_minutes) do
+      order
+      |> rename_id()
+      |> Map.put("expiration_date", expiration_date)
+    else
+      _ ->
+        order
+    end
   end
 
   defp rename_id(map) do
@@ -70,49 +84,50 @@ defmodule DeliverycenterElixir.Parser do
     order_itens = hd(map["order_items"])
     payments = hd(map["payments"])
 
-    time_to_expire =
+    {:ok, time_to_expire} =
       CalculateExpirationDate.call(map["date_created"], map["expiration_in_minutes"])
 
-    %{
-      externalCode: map["id"],
-      storeId: map["store_id"],
-      subTotal: map["total_amount"],
-      deliveryFee: map["total_shipping"],
-      total_shipping: map["total_shipping"],
-      total: map["total_amount_with_shipping"],
-      country: map["shipping"]["receiver_address"]["country"],
-      state: map["shipping"]["receiver_address"]["state"],
-      city: map["shipping"]["receiver_address"]["city"],
-      district: map["shipping"]["receiver_address"]["neighborhood"],
-      street: map["shipping"]["receiver_address"]["neighborhood"],
-      complement: map["shipping"]["receiver_address"]["comment"],
-      latitude: map["shipping"]["receiver_address"]["latitude"],
-      longitude: map["shipping"]["receiver_address"]["longitude"],
-      dtOrderCreate: map["date_created"],
-      timeToExpire: time_to_expire,
-      postalCode: map["shipping"]["receiver_address"]["zip_code"],
-      number: map["shipping"]["receiver_address"]["street_number"],
-      customer: %{
-        externalCode: map["buyer"]["id"],
-        name: map["buyer"]["first_name"],
-        email: map["buyer"]["email"],
-        contact: map["buyer"]["phone"]
-      },
-      items: [
-        %{
-          externalCode: order_itens["item_id"],
-          name: order_itens["title"],
-          price: order_itens["unit_price"],
-          quantity: order_itens["quantity"],
-          total: order_itens["full_unit_price"]
-        }
-      ],
-      payments: [
-        %{
-          type: payments["payment_type"],
-          value: payments["total_paid_amount"]
-        }
-      ]
-    }
+    {:ok,
+     %{
+       externalCode: map["id"],
+       storeId: map["store_id"],
+       subTotal: map["total_amount"],
+       deliveryFee: map["total_shipping"],
+       total_shipping: map["total_shipping"],
+       total: map["total_amount_with_shipping"],
+       country: map["shipping"]["receiver_address"]["country"],
+       state: map["shipping"]["receiver_address"]["state"],
+       city: map["shipping"]["receiver_address"]["city"],
+       district: map["shipping"]["receiver_address"]["neighborhood"],
+       street: map["shipping"]["receiver_address"]["neighborhood"],
+       complement: map["shipping"]["receiver_address"]["comment"],
+       latitude: map["shipping"]["receiver_address"]["latitude"],
+       longitude: map["shipping"]["receiver_address"]["longitude"],
+       dtOrderCreate: map["date_created"],
+       timeToExpire: time_to_expire,
+       postalCode: map["shipping"]["receiver_address"]["zip_code"],
+       number: map["shipping"]["receiver_address"]["street_number"],
+       customer: %{
+         externalCode: map["buyer"]["id"],
+         name: map["buyer"]["first_name"],
+         email: map["buyer"]["email"],
+         contact: map["buyer"]["phone"]
+       },
+       items: [
+         %{
+           externalCode: order_itens["item_id"],
+           name: order_itens["title"],
+           price: order_itens["unit_price"],
+           quantity: order_itens["quantity"],
+           total: order_itens["full_unit_price"]
+         }
+       ],
+       payments: [
+         %{
+           type: payments["payment_type"],
+           value: payments["total_paid_amount"]
+         }
+       ]
+     }}
   end
 end

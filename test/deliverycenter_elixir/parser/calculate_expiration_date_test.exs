@@ -9,7 +9,7 @@ defmodule DeliverycenterElixir.Parser.CalculateExpirationDateTest do
 
       response = CalculateExpirationDate.call(date, 60)
 
-      expected_response = "2019-06-24T17:45:32.000-04:00"
+      expected_response = {:ok, "2019-06-24T17:45:32.000-04:00"}
 
       assert expected_response == response
     end
@@ -19,7 +19,7 @@ defmodule DeliverycenterElixir.Parser.CalculateExpirationDateTest do
 
       response = CalculateExpirationDate.call(date, 60)
 
-      expected_response = {:error, "Invalid date"}
+      expected_response = {:error, "Invalid create date"}
 
       assert expected_response == response
     end
