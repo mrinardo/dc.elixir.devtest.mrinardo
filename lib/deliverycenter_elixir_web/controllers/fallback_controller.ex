@@ -1,7 +1,6 @@
 defmodule DeliverycenterElixirWeb.FallbackController do
   use DeliverycenterElixirWeb, :controller
 
-  # alias Rockelivery.Error
   alias DeliverycenterElixirWeb.ErrorView
 
   def call(conn, {:error, result}) do

@@ -31,9 +31,6 @@ defmodule DeliverycenterElixir.Parser do
       {:error, _message} = error ->
         error
     end
-
-    # open_file = File.read!(payload_file)
-    # json = Jason.decode!(open_file)
   end
 
   defp get_address_data(%{"shipping" => shipping}) do
