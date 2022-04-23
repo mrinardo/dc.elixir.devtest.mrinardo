@@ -3,9 +3,25 @@ defmodule DeliverycenterElixir.Address do
 
   import Ecto.Changeset
 
+  @required_params [
+    :external_id,
+    :address_line,
+    :street_name,
+    :street_number,
+    :comment,
+    :zip_code,
+    :city,
+    :state,
+    :country,
+    :neighborhood,
+    :latitude,
+    :longitude,
+    :receiver_phone
+  ]
+
   schema "addresses" do
     field :external_id, :integer
-    field :fieldress_line, :string
+    field :address_line, :string
     field :street_name, :string
     field :street_number, :string
     field :comment, :string
@@ -21,18 +37,9 @@ defmodule DeliverycenterElixir.Address do
     belongs_to :customer, DeliverycenterElixir.Customer
   end
 
-  def changeset(order, attrs) do
-    cast(order, attrs, [
-      :external_id,
-      :store_id,
-      :date_created,
-      :date_closed,
-      :last_updated,
-      :total_amount,
-      :total_shipping,
-      :total_amount_with_shipping,
-      :paid_amount,
-      :expiration_date
-    ])
+  def changeset(struct \\ %__MODULE__{}, attrs) do
+    struct
+    |> cast(attrs, @required_params)
+    |> validate_required(@required_params)
   end
 end

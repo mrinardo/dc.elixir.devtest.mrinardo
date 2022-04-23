@@ -6,10 +6,13 @@ use Mix.Config
 # to provide built-in test partitioning in CI environment.
 # Run `mix help test` for more information.
 config :deliverycenter_elixir, DeliverycenterElixir.Repo,
-  username: "postgres",
-  password: "postgres",
-  database: "deliverycenter_elixir_test#{System.get_env("MIX_TEST_PARTITION")}",
-  hostname: "localhost",
+  username: System.get_env("PGUSER") || "postgres",
+  password: System.get_env("PGPASSWORD") || "postgres",
+  database:
+    (System.get_env("PGDATABASE") || "deliverycenter_elixir") <>
+      "_test#{System.get_env("MIX_TEST_PARTITION")}",
+  hostname: System.get_env("PGHOST") || "localhost",
+  port: System.get_env("PGPORT") || 5432,
   pool: Ecto.Adapters.SQL.Sandbox
 
 # We don't run a server during test. If one is required,
